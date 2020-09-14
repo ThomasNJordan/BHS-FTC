@@ -18,7 +18,7 @@ If you have any questions testing locally, shoot me an email: JordanT2021@365.bc
 If you want to edit/add code to the existing repo, create a pull request with the added code, and a senior programming officer will look it over and approve/edit the code. You can also request to delete unnecessary code, or even add whole files. If you need a file added immedeatly, text me:
 (585)-730-2747
 
-If you need a more in-depth explanation of configuration, please see https://www.firstinspires.org/sites/default/files/uploads/resource_library/ftc/android-studio-guide.pdf.
+If you run into technical issues while installing or configuring Android Studio, please see: https://www.firstinspires.org/sites/default/files/uploads/resource_library/ftc/android-studio-guide.pdf.
 
 ## Prerequisites
 #### Windows
