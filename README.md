@@ -5,7 +5,7 @@
 * [Running](#prerequisites)
 
 ## General Info
-BHS-FTC is a fork of the existing FTC-APP code. There is a sample Tele-Op and Autonimous Program to give an idea of what the code will look like. All code used for the robot will be placed in **TeamCode/java/org/firstinspires/ftc/teamcode**
+BHS-FTC is a fork of the existing FTC-APP code. There is a sample Tele-Op and Autonomous Program to give an idea of what the code will look like. All code used for the robot will be placed in **TeamCode/java/org/firstinspires/ftc/teamcode**
  
 Our phones will be running Android 10. You can build the app on the following platforms:
 * Windows
