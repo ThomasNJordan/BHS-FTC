@@ -1,167 +1,101 @@
-package org.firstinspires.ftc.teamcode;
+ * Copyright (c) 2016 Titan Robotics Club (http://www.titanrobotics.com)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package samples;
+
+import android.widget.TextView;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-import com.qualcomm.robotcore.hardware.ServoController;
 
-@TeleOp(name="TeleOP", group="Iterative Opmode")
+import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 
-public class TeleOP extends OpMode {
-    // Declare OpMode members.
-    private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
-    private DcMotor lift = null;
-    private DcMotor drop = null;
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
+import FtcSampleCode.R;
+import ftclib.FtcAndroidGyro;
+import ftclib.FtcOpMode;
+import hallib.HalDashboard;
+import trclib.TrcGyro;
+import trclib.TrcRobot;
+
+@TeleOp(name="Test: Android Gyro", group="FtcTestSamples")
+@Disabled
+public class FtcTestAndroidGyro extends FtcOpMode
+{
+    private HalDashboard dashboard;
+    private FtcAndroidGyro gyro;
+
+    //
+    // Implements FtcOpMode abstract methods.
+    //
+
     @Override
-    public void init() {
-        telemetry.addData("Status", "Initialized");
+    public void initRobot()
+    {
+        hardwareMap.logDevices();
+        dashboard = HalDashboard.getInstance();
+        FtcRobotControllerActivity activity = (FtcRobotControllerActivity)hardwareMap.appContext;
+        dashboard.setTextView((TextView)activity.findViewById(R.id.textOpMode));
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
-        rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
-        lift = hardwareMap.get(DcMotor.class, "lift");
-        drop = hardwareMap.get(DcMotor.class, "drop");
+        gyro = new FtcAndroidGyro("AndroidGyro");
+        gyro.calibrate();
+        double scale = 180.0/Math.PI;
+        gyro.setXScale(scale);
+        gyro.setYScale(scale);
+        gyro.setZScale(scale);
+    }   //initRobot
 
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.FORWARD);
-        lift.setDirection(DcMotor.Direction.FORWARD);
-        drop.setDirection(DcMotor.Direction.FORWARD);
-        // Tell the driver that initialization is complete.
-        telemetry.addData("Status", "Initialized");
-    }
+    //
+    // Overrides TrcRobot.RobotMode methods.
+    //
 
-    /*
-     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     */
     @Override
-    public void init_loop() {
-    }
+    public void startMode(TrcRobot.RunMode prevMode, TrcRobot.RunMode nextMode)
+    {
+        dashboard.clearDisplay();
+        gyro.setEnabled(true);
+    }   //startMode
 
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     *
-     */
-    double leftPower;
-    double rightPower;
-    double liftPower;
-    double dropPower;
-    int control = 0;
     @Override
-    public void start() {
-        runtime.reset();
-    }
+    public void stopMode(TrcRobot.RunMode prevMode, TrcRobot.RunMode nextMode)
+    {
+        gyro.setEnabled(false);
+    }   //stopMode
 
-    /*
-     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-     */
     @Override
-    public void loop() {
-        // Setup a variable for each drive wheel to save power level for telemetry
+    public void runPeriodic(double elapsedTime)
+    {
+        final int LABEL_WIDTH = 100;
 
-        //double pos;
-        //pos = 0;
-        // Choose to drive using either Tank Mode, or POV Mode
-        // Comment out the method that's not used.  The default below is POV.
+        dashboard.displayPrintf(1, LABEL_WIDTH, "Raw: ", "x=%.2f,y=%.2f,z=%.2f (rad/s)",
+                                gyro.getRawXData(TrcGyro.DataType.ROTATION_RATE).value,
+                                gyro.getRawYData(TrcGyro.DataType.ROTATION_RATE).value,
+                                gyro.getRawZData(TrcGyro.DataType.ROTATION_RATE).value);
+        dashboard.displayPrintf(2, LABEL_WIDTH, "Rot: ", "x=%.2f,y=%.2f,z=%.2f (deg/s)",
+                                gyro.getXRotationRate().value,
+                                gyro.getYRotationRate().value,
+                                gyro.getZRotationRate().value);
+        dashboard.displayPrintf(3, LABEL_WIDTH, "Heading: ", "x=%.2f,y=%.2f,z=%.2f (deg)",
+                                gyro.getXHeading().value,
+                                gyro.getYHeading().value,
+                                gyro.getZHeading().value);
+    }   //runPeriodic
 
-        // POV Mode uses left stick to go forward, and right stick to turn.
-        // - This uses basic math to combine motions and is easier to drive straight.
-        if(gamepad1.a == true){
-            control = 1;
-        }
-        if(gamepad2.a == true){
-            control = 2;
-        }
-        if(gamepad2.b == true){
-            control = 0;
-        }if(gamepad1.b == true){
-            control = 0;
-        }
-        if(control == 1){
-            double turn = gamepad1.left_stick_x;
-            double drive = gamepad1.right_trigger - gamepad1.left_trigger;
-
-            leftPower = Range.clip(turn + drive, -1.0, 1.0);
-            rightPower = Range.clip(turn - drive, -1.0, 1.0);
-            liftPower = gamepad1.right_stick_y;
-            if (gamepad1.dpad_down == true){
-                drop.setPower(-.02);
-            }
-            if (gamepad1.dpad_up == true){
-                drop.setPower(.02);
-            }
-            if (gamepad1.x == true){
-                drop.setPower(0);
-            }
-            leftDrive.setPower(leftPower);
-            rightDrive.setPower(rightPower);
-            lift.setPower(liftPower);
-
-        }
-        else if(control == 2){
-            double turn = gamepad2.left_stick_x;
-            double drive = gamepad2.right_trigger - gamepad2.left_trigger;
-
-            leftPower = Range.clip(turn + drive, -1.0, 1.0);
-            rightPower = Range.clip(turn - drive, -1.0, 1.0);
-            liftPower = gamepad2.right_stick_y;
-            if (gamepad2.dpad_down == true){
-                drop.setPower(-.02);
-            }
-            if (gamepad2.dpad_up == true){
-                drop.setPower(.02);
-            }
-            if (gamepad2.x == true){
-                drop.setPower(0);
-            }
-            leftDrive.setPower(leftPower);
-            rightDrive.setPower(rightPower);
-            lift.setPower(liftPower);
-        }
-        else if(control == 0) {
-            double turn = gamepad1.left_stick_x;
-            double drive = gamepad1.right_trigger - gamepad1.left_trigger;
-
-            leftPower = Range.clip(turn + drive, -1.0, 1.0);
-            rightPower = Range.clip(turn - drive, -1.0, 1.0);
-            liftPower = gamepad2.right_stick_y;
-            dropPower = gamepad2.left_stick_y;
-            leftDrive.setPower(leftPower);
-            rightDrive.setPower(rightPower);
-            lift.setPower(liftPower);
-            drop.setPower(.2 * dropPower);
-
-            // Tank Mode uses one stick to control each wheel.
-            // - This requires no math, but it is hard to drive forward slowly and keep straight.
-            // leftPower  = gamepad1.right_trigger - gamepad1.left_trigger ;
-            //rightPower = gamepad1.right_trigger - gamepad1.left_trigger ;
-        /*if(gamepad2.a == true){
-            pos = 90;
-        }
-
-*/
-        }
-        // Send calculated power to wheels
-        telemetry.addData("control value", control);
-
-        // Show the elapsed game time and wheel power.
-
-
-        /*
-         * Code to run ONCE after the driver hits STOP
-         */
-    }
-}
+}   //class FtcTestAndroidGyro
