@@ -20,6 +20,9 @@ If you want to edit/add code to the existing repo, create a pull request with th
 
 If you run into technical issues while installing or configuring Android Studio, please see: https://www.firstinspires.org/sites/default/files/uploads/resource_library/ftc/android-studio-guide.pdf.
 
+If you have never used github before, check out this tutorial on how to create a pull request:
+https://opensource.guide/how-to-contribute/
+
 ## Prerequisites
 #### Windows
 Make sure you are running the latest version of your OS, then navigate to https://developer.android.com/studio.
