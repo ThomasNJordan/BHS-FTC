@@ -1,7 +1,7 @@
 # BHS-FTC
 ## Table of contents
 * [General info](#general-info)
-* [Editing](#features)
+* [Editing](#editing)
 * [Running](#prerequisites)
 
 ## General Info
