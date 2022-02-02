@@ -1,4 +1,6 @@
 # BHS-FTC
+# Depricated as of 2/1/2022
+
 ## Table of contents
 * [General info](#general-info)
 * [Editing](#editing)
